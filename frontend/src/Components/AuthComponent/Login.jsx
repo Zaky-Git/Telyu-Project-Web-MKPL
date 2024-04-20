@@ -11,6 +11,53 @@ import { toast } from "react-toastify";
 import CarouselAuth from "./CarouselAuth";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { user, isError, isSuccess, isLoading, message } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/telyuProject/home");
+    }
+    dispatch(reset());
+  }, [user, isSuccess, dispatch, navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    dispatch(loginUser({ email, password }));
+    localStorage.setItem("isExpand", true);
+    localStorage.setItem("currentNav", 0);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Log in Successful!");
+    }
+  }, [isSuccess]);
+
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    setIsButtonDisabled(newEmail === "" || password === "");
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    setIsButtonDisabled(email === "" || newPassword === "");
+  };
+
+  const navigateToSignup = () => {
+    navigate("/signup");
+  };
+
   return (
     <div className="w-screen min-h-screen justify-center">
       <div className="flex justify-center min-h-screen w-full">
