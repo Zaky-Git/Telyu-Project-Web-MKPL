@@ -83,6 +83,40 @@ export const login = async (req, res) => {
   }
 };
 
+export const signup = async (req, res) => {
+  const {
+    phoneNumber,
+    firstName,
+    lastName,
+    email,
+    password,
+    gender,
+    lectureCode,
+    facultyCode,
+    majorCode,
+    kelas,
+    role,
+  } = req.body;
+  const hashPassword = await argon2.hash(password);
+  try {
+    await User.create({
+      phoneNumber: phoneNumber,
+      firstName: capitalize(firstName),
+      lastName: capitalize(lastName),
+      email: email.toLowerCase(),
+      password: hashPassword,
+      gender: gender,
+      lectureCode: lectureCode === null ? null : lectureCode.toUpperCase(),
+      facultyCode: facultyCode,
+      majorCode: majorCode,
+      kelas: kelas,
+      role: role,
+    });
+    res.status(201).json({ msg: "Sign Up Complete" });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 export const checkMail = async (req, res) => {
   try {
